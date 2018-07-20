@@ -77,12 +77,12 @@ class ClientVMAPI(APIView):
 
 class UpdateHostStatusAPI(APIView):
     def post(self, request, format=None):
-        error = json.loads(request.POST.get("error"))
-        for host_name in error:
+        data = json.loads(request.POST.get("data"))
+        for host_name, status in data.iteritems():
             if Host.objects.filter(name=host_name).first():
                 host = Host.objects.get(name=host_name)
-                if host.status:
-                    host.status = False
+                if host.status != status:
+                    host.status = status
                     host.save()
             else:
                 Host.objects.create(name=host_name, status=False)
