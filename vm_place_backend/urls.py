@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^client/', views.ClientAPI.as_view()),
     url(r'^history_place?$', views.HistoryPlaceAPI.as_view()),
     url(r'^client_vms_place?$', views.ClientVMAPI.as_view()),
+    url(r'^update_host_status?$', views.UpdateHostStatusAPI.as_view()),
+    url(r'^update_vm_place?$', views.UpdateVMPlaceAPI.as_view()),
 ]

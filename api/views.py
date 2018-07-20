@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from db.cmdb import Client, HistoryPlace, VM, VC, Host
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
+import json
 # Create your views here.
 
 
@@ -72,6 +73,39 @@ class ClientVMAPI(APIView):
         else:
             msg = "输入为空，请重新输入"
         return Response({"status": status, "msg": msg, "client": client_name, "data": data, "total": len(data), "size": size, "page": page})
+
+
+class UpdateHostStatusAPI(APIView):
+    def post(self, request, format=None):
+        error = json.loads(request.POST.get("error"))
+        for host_name in error:
+            if Host.objects.filter(name=host_name).first():
+                host = Host.objects.get(name=host_name)
+                if host.status:
+                    host.status = False
+                    host.save()
+            else:
+                Host.objects.create(name=host_name, status=False)
+        return Response({"status": True})
+
+
+class UpdateVMPlaceAPI(APIView):
+    def post(self, request, format=None):
+        host_name = request.POST.get("host")
+        vms = json.loads(request.POST.get("vms"))
+        if Host.objects.filter(name=host_name).first():
+            host = Host.objects.get(name=host_name)
+        else:
+            host = Host.objects.create(name=host_name)
+        for vm_name in vms:
+            if VM.objects.filter(name=vm_name).first():
+                vm = VM.objects.get(name=vm_name)
+            else:
+                vm = VM.objects.create(name=vm_name)
+            print host.name, vm.name
+            HistoryPlace.update(vm=vm, place=host)
+        return Response({"status": True})
+
 
 
 

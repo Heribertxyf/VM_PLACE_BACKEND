@@ -81,6 +81,7 @@ class Cluster(models.Model):
 class Host(models.Model):
     name = models.CharField(max_length=255,default='',unique=False,null=False)
     ip = models.CharField(max_length=255,default='',unique=False,null=False)
+    cluster = models.ForeignKey(Cluster,default='',null=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -90,6 +91,7 @@ class Host(models.Model):
     class Meta:
         db_table = 'host'
         verbose_name = 'host'
+
 
 
 class VM(models.Model):
@@ -103,6 +105,12 @@ class VM(models.Model):
     class Meta:
         db_table = 'vm'
         verbose_name = 'vm'
+
+    @classmethod
+    def create(cls, client_name, name):
+        client = Client.objects.get(name=client_name)
+        vm = VM.objects.create(name=name, client=client)
+        return True, vm
 
 
 class HistoryPlace(models.Model):
@@ -120,3 +128,23 @@ class HistoryPlace(models.Model):
     class Meta:
         db_table = 'history_place'
         verbose_name = 'history_place'
+
+    @classmethod
+    def update(cls, vm, place):
+        if HistoryPlace.objects.filter(vm=vm).first():
+            history = HistoryPlace.objects.get(vm=vm)
+            if place.id != history.place1.id:
+                history_place = [place, history.place1, history.place2, history.place3, history.place4]
+                history.place1 = history_place[0]
+                history.place2 = history_place[1]
+                history.place3 = history_place[2]
+                history.place4 = history_place[3]
+                history.place5 = history_place[4]
+                history.save()
+        else:
+            history = HistoryPlace.objects.create(vm=vm, place1=place)
+        return True, history
+
+
+
+

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from conf import CONFIG
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -81,11 +82,11 @@ WSGI_APPLICATION = 'vm_place_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vm_history',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
+        'NAME': CONFIG.DATABASE['name'],
+        'USER': CONFIG.DATABASE['user'],
+        'PASSWORD': CONFIG.DATABASE['password'],
+        'HOST': CONFIG.DATABASE['host'],
+        'PORT': CONFIG.DATABASE['port'],
     }
 }
 
