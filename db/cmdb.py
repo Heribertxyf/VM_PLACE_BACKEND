@@ -96,7 +96,7 @@ class Host(models.Model):
 
 class VM(models.Model):
     name = models.CharField(max_length=255,default='',unique=False,null=False)
-    client = models.ForeignKey(Client,default='')
+    client = models.ForeignKey(Client,default='',null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
