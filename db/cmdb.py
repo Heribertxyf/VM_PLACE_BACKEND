@@ -36,8 +36,8 @@ class Site(models.Model):
 
 
 class VC(models.Model):
-    name = models.CharField(max_length=255,default='',unique=False,null=False)
-    ip = models.CharField(max_length=255,default='',null=True,blank=True)
+    name = models.CharField(max_length=255,default='',unique=True,null=False)
+    ip = models.CharField(max_length=255,default='',unique=True,null=False)
     port = models.IntegerField(default=443,null=True,blank=True)
     username = models.CharField(max_length=255,default='ops.user01',null=True,blank=True)
     password = models.CharField(max_length=255,default='cds-P@$$w0rd@2017',null=True,blank=True)
@@ -52,9 +52,9 @@ class VC(models.Model):
 
 
 class Pod(models.Model):
-    name = models.CharField(max_length=255,default='',unique=False,null=False)
+    name = models.CharField(max_length=255,default='',unique=True,null=False)
     site = models.ForeignKey(Site,default='',null=True)
-    vc = models.ForeignKey(VC,default='',null=True)
+    vc = models.ForeignKey(VC,default='',null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
@@ -66,8 +66,8 @@ class Pod(models.Model):
 
 
 class Cluster(models.Model):
-    name = models.CharField(max_length=255,default='',unique=False,null=False)
-    pod = models.ForeignKey(Pod,default='',null=True)
+    name = models.CharField(max_length=255,default='',unique=True,null=False)
+    pod = models.ForeignKey(Pod,default='',null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
@@ -79,9 +79,9 @@ class Cluster(models.Model):
 
 
 class Host(models.Model):
-    name = models.CharField(max_length=255,default='',unique=False,null=False)
-    ip = models.CharField(max_length=255,default='',unique=False,null=False)
-    cluster = models.ForeignKey(Cluster,default='',null=True)
+    name = models.CharField(max_length=255,default='',unique=True,null=False)
+    ip = models.CharField(max_length=255,default='',unique=True,null=False)
+    cluster = models.ForeignKey(Cluster,default='',null=False)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -114,7 +114,7 @@ class VM(models.Model):
 
 
 class HistoryPlace(models.Model):
-    vm = models.ForeignKey(VM,default='',unique=False,null=False)
+    vm = models.ForeignKey(VM,default='',unique=True,null=False)
     place1 = models.ForeignKey(Host,default='',null=True,related_name='place_current')
     place2 = models.ForeignKey(Host,default='',null=True,related_name='place_last_1')
     place3 = models.ForeignKey(Host,default='',null=True,related_name='place_last_2')

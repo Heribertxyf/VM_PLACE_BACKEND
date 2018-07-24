@@ -2,12 +2,12 @@ from rest_framework import serializers
 from db.cmdb import Client, Site, Pod, Cluster, VC, VM, Host, HistoryPlace
 import json
 
+
 class ClientSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     class Meta:
         model = Client
         fields = ('id','uuid','name','email','phone','created_at')
-
 
 
 class HistoryPlaceSerializer(serializers.ModelSerializer):

@@ -13,15 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-from api import views
+from api import views, backend
+# from backend import update_host_relation
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^backend/', include("backend.urls")),
     url(r'^client/', views.ClientAPI.as_view()),
     url(r'^history_place?$', views.HistoryPlaceAPI.as_view()),
     url(r'^client_vms_place?$', views.ClientVMAPI.as_view()),
     url(r'^update_host_status?$', views.UpdateHostStatusAPI.as_view()),
     url(r'^update_vm_place?$', views.UpdateVMPlaceAPI.as_view()),
+    url(r'^create_vc?$', backend.CreateVC.as_view()),
+    url(r'^create_site?$', backend.CreateSite.as_view()),
+    url(r'^relate_site_pod?$', backend.RelateSitePod.as_view()),
+
+    # url(r'^update_base_info?$', update_host_relation.get_null_hosts_name()),
 ]

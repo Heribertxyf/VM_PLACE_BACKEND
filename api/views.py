@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from db.cmdb import Client, HistoryPlace, VM, VC, Host
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
+from backend.update_host_relation import *
 import json
 # Create your views here.
 
@@ -35,9 +36,9 @@ class HistoryPlaceAPI(APIView):
         vm_name = request.POST.get('vm_name')
         if vm_name:
             if HistoryPlace.objects.filter(vm__name=vm_name).count() > 0:
+                status = True
                 history_place = HistoryPlace.objects.get(vm__name=vm_name)
                 serializer = HistoryPlaceSerializer(history_place)
-                status = True
                 vm_place = serializer.data
             else:
                 msg = "没有找到VM"
@@ -107,6 +108,32 @@ class UpdateVMPlaceAPI(APIView):
         return Response({"status": True})
 
 
+class CreateVC(APIView):
+    def post(self, request, format=None):
+        name = request.POST.get("name")
+        ip = request.POST.get("ip")
+        port = request.POST.get("port")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if verify_vc(name, ip):
+            vc = VC.objects.create(name=name, ip=ip, port=port, username=username, password=password)
+            init_vc_info(vc)
+            data = {"status": True, "msg": "VC创建，初始化成功"}
+        else:
+            data = {"status": False, "msg": "VC创建失败"}
+        return Response(data)
+
+
+class CreateSite(APIView):
+    def post(self, request, format=None):
+        name = request.POST.get("name")
+        display = request.POST.get("display_name")
+        if verify_site():
+            Site.objects.create(name=name, display_name=display)
+            data = {"status": True, "msg": "Site创建成功"}
+        else:
+            data = {"status": False, "msg": "Site创建失败"}
+        return Response(data)
 
 
 
